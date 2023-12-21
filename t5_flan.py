@@ -5,9 +5,10 @@ from torch.utils.data import DataLoader
 import time
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(device)
 # Load T5-Flan model and tokenizer
 model_name = "google/flan-t5-xl"
-model = T5ForConditionalGeneration.from_pretrained(model_name)
+model = T5ForConditionalGeneration.from_pretrained(model_name).to(device)
 tokenizer = T5Tokenizer.from_pretrained(model_name)
 
 # Load IMDb dataset
@@ -16,13 +17,11 @@ train_dataset, test_dataset = IMDB(split=('train', 'test'))
 # Choose a subset of the test dataset for benchmarking
 benchmark_data = list(test_dataset)[:100]
 
+
 # Function to perform inference on a single input
 def perform_inference(input_text):
     output_text = ''
-    if device == 'cpu':
-        input_ids = tokenizer(input_text, return_tensors="pt").input_ids
-    else:
-        input_ids = tokenizer(input_text, return_tensors="pt").input_ids.to(device)
+    input_ids = tokenizer(input_text, return_tensors="pt").input_ids.to(device)
     output_ids = model.generate(input_ids)
     for txt in output_ids:
        output_text = output_text + tokenizer.decode(txt, skip_special_tokens=True)
