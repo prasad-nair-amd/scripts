@@ -101,7 +101,8 @@ if find_throughput:
     # throughput benchmarking
     print(f"\n\n{DPINK}***Throughput***{RESET}\n\n")
     cpu_start = process.cpu_percent()
-    num_iterations = 7
+    num_iterations = 3
+    print(f"Number of iterations : {num_iterations}")
     throughput = measure_throughput(benchmark_data, num_iterations)
     cpu_end = process.cpu_percent()
     cpu = cpu_end - cpu_start 
