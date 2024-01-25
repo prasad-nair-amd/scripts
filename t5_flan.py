@@ -55,13 +55,14 @@ def worker(thread_id, data):
     print(f"Thread {thread_id} finished.")
 
 
+
 # Function to measure throughput
-def measure_throughput(data, iterations):
+def measure_throughput(data, threads):
     start_time = time.time()
 
     #start threads
     thread_list = []
-    for i in range(iterations):
+    for i in range(threads):
         thread = threading.Thread(target=worker, args=(i+1,data))
         thread_list.append(thread)
         thread.start()
@@ -71,7 +72,7 @@ def measure_throughput(data, iterations):
         thread.join()
     
     end_time = time.time()
-    throughput = ( end_time - start_time ) / iterations
+    throughput = threads * 100 / (end_time - start_time)
     return throughput
 
 
@@ -88,10 +89,9 @@ if find_latency:
     # latency benchmarking
     print(f"\n\n{DPINK}***Latency***{RESET}\n\n")
     process = psutil.Process()
-    cpu_start = process.cpu_percent()
-    num_iterations = 100
+    cpu_start = process.cpu_percent(percpu=True)
     latency = measure_latency(benchmark_data)
-    cpu_end = process.cpu_percent()
+    cpu_end = process.cpu_percent(percpu=True)
     cpu = cpu_end - cpu_start
     print(f"Latency for {len(benchmark_data)} examples: {latency:.2f} seconds")
     print(f"CPU usage : {cpu} ")  
@@ -100,13 +100,13 @@ if find_latency:
 if find_throughput:
     # throughput benchmarking
     print(f"\n\n{DPINK}***Throughput***{RESET}\n\n")
-    cpu_start = process.cpu_percent()
-    num_iterations = 3
-    print(f"Number of iterations : {num_iterations}")
-    throughput = measure_throughput(benchmark_data, num_iterations)
-    cpu_end = process.cpu_percent()
+    cpu_start = process.cpu_percent(percpu=True)
+    num_threads = 3
+    print(f"Number of Threads : {num_threads}")
+    throughput = measure_throughput(benchmark_data, num_threads)
+    cpu_end = process.cpu_percent(percpu=True)
     cpu = cpu_end - cpu_start 
-    print(f"Throughput for {len(benchmark_data)} examples: {throughput:.2f} operations per second")
+    print(f"Throughput: {throughput:.2f} records per second")
     print(f"CPU usage : {cpu} ")  
     print_memusage()
 
