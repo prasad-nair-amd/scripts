@@ -12,6 +12,7 @@ RESET = '\033[0m'
 find_latency = True
 find_throughput = True
 
+process = psutil.Process()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"{DPINK}This workload is running on {device} ! {RESET} ")
 # Load T5-Flan model and tokenizer
@@ -88,7 +89,6 @@ def print_memusage():
 if find_latency:
     # latency benchmarking
     print(f"\n\n{DPINK}***Latency***{RESET}\n\n")
-    process = psutil.Process()
     cpu_start = process.cpu_percent(percpu=True)
     latency = measure_latency(benchmark_data)
     cpu_end = process.cpu_percent(percpu=True)
