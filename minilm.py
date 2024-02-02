@@ -9,9 +9,9 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
 #Preparing a dataset
-dataset = datasets.load_dataset("sst2")
+dataset = datasets.load_dataset("IMDB")
 
-data = dataset["train"]["sentence"][:10000]
+data = dataset["train"]["text"][:10000]
 
 print(len(data))
 
